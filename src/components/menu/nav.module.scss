@@ -1,0 +1,30 @@
+.nav {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 70px 20px 20px 20px;
+  height: 100%;
+  box-sizing: border-box;
+  .body {
+    display: flex;
+    gap: 0px;
+    flex-direction: column;
+    a {
+      text-decoration: none;
+      color: black;
+      font-size: 46px;
+    }
+  }
+  .footer {
+    height: fit-content;
+    margin-top: auto;
+    display: flex;
+    gap: 24px;
+    a {
+      flex: 1 1 0;
+      margin: 0;
+      text-align: center;
+    }
+  }
+}

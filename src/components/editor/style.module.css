@@ -1,0 +1,323 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  overflow: hidden;
+  font-family:
+    'DM Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fafafa;
+  flex-wrap: wrap;
+}
+
+.toolbarGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: #e5e5e5;
+  margin: 0 6px;
+}
+
+.toolBtn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  transition:
+    background 0.1s,
+    color 0.1s,
+    border-color 0.1s;
+}
+
+.toolBtn:hover {
+  background: #fff;
+  border-color: #d5d5d5;
+  color: #111;
+}
+
+.toolBtn.active {
+  background: #fff;
+  border-color: #bbb;
+  color: #111;
+}
+
+.boldBtn {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.5px;
+}
+
+.italicBtn {
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px;
+}
+
+/* ── Editor ── */
+.editor {
+  flex: 1;
+  padding: 32px 40px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 17px;
+  line-height: 1.8;
+  color: #111;
+  outline: none;
+  min-height: 380px;
+  overflow-y: auto;
+}
+
+.editor:empty::before {
+  content: attr(data-placeholder);
+  color: #aaa;
+  pointer-events: none;
+  font-style: italic;
+}
+
+.editor a {
+  color: #185fa5;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+/* Applied to images inserted by the editor */
+.insertedImage {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: block;
+}
+
+/* ── Status bar ── */
+.statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+  font-size: 11px;
+  color: #999;
+  font-family: inherit;
+}
+
+/* ── Modal ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 24px;
+  width: 360px;
+  max-width: 90vw;
+}
+
+.modalTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 16px;
+  letter-spacing: -0.2px;
+}
+
+.label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f9f9f9;
+  color: #111;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 0 10px;
+  margin-bottom: 14px;
+  outline: none;
+  transition: border-color 0.1s;
+}
+
+.input:focus {
+  border-color: #999;
+  background: #fff;
+}
+
+.imageError {
+  font-size: 12px;
+  color: #a32d2d;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: #fcebeb;
+  border-radius: 6px;
+}
+
+.imagePreview {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e5e5;
+  margin-bottom: 14px;
+}
+
+.modalFooter {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.btnCancel {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: transparent;
+  color: #666;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.btnCancel:hover {
+  background: #f5f5f5;
+}
+
+.btnInsert {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #111;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.btnInsert:hover {
+  background: #f5f5f5;
+}
+.btnInsert:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Dark mode ── */
+@media (prefers-color-scheme: dark) {
+  .shell {
+    background: #1a1a1a;
+    border-color: #2e2e2e;
+  }
+  .toolbar,
+  .statusbar {
+    background: #141414;
+    border-color: #2e2e2e;
+  }
+  .toolBtn {
+    color: #aaa;
+  }
+  .toolBtn:hover,
+  .toolBtn.active {
+    background: #222;
+    border-color: #444;
+    color: #eee;
+  }
+  .divider {
+    background: #2e2e2e;
+  }
+  .editor {
+    color: #e5e5e5;
+  }
+  .editor:empty::before {
+    color: #555;
+  }
+  .editor a {
+    color: #6baed6;
+  }
+  .modal {
+    background: #1e1e1e;
+    border-color: #333;
+  }
+  .modalTitle {
+    color: #eee;
+  }
+  .input {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+    color: #e5e5e5;
+  }
+  .input:focus {
+    border-color: #666;
+    background: #222;
+  }
+  .label {
+    color: #888;
+  }
+  .btnCancel {
+    color: #aaa;
+    border-color: #3a3a3a;
+  }
+  .btnCancel:hover {
+    background: #2a2a2a;
+  }
+  .btnInsert {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #eee;
+  }
+  .btnInsert:hover {
+    background: #333;
+  }
+  .statusbar {
+    color: #555;
+  }
+}

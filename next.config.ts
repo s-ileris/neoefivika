@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(dirname),
   },
+  cacheComponents: true,
+  images: {
+    remotePatterns: [new URL('http://localhost:3000/**')],
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
