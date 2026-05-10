@@ -35,7 +35,7 @@ function ReadProgressBar() {
   }, [])
 
   return (
-    <motion.div className="fixed top-0 left-0 z-10 w-full h-[56px] pointer-events-none">
+    <motion.div className="fixed bg-white z-50 top-0 left-0 w-full h-[64px] pointer-events-none">
       <motion.div
         className="h-full bg-[#D1D5DB50] z-10"
         initial={{ width: 0 }}
@@ -71,14 +71,17 @@ export default function Page({ data }: { data: Article }) {
         </p>
         {data.author && (
           <p className="text-center font-medium opacity-50 mt-1">
-            {getAuthor(data.author)?.name}
-            {getAuthor(data.author)?.age ? `, ${getAuthor(data.author)?.age} ετών` : ''}
+            {getAuthor(data.author, data.createdAt)?.name}
+            {getAuthor(data.author, data.createdAt)?.age
+              ? `, ${getAuthor(data.author, data.createdAt)?.age} ετών`
+              : ''}
           </p>
         )}
       </div>
       {isValidImage(data.image) && (
         <div className="px-10 max-sm:px-5 mt-12">
           <PImage
+            //@ts-ignore
             image={data.image}
             alt={data.title + ' cover' || 'Article image'}
             unoptimized

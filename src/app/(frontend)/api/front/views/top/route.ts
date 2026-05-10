@@ -1,4 +1,4 @@
-import { after, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getMostViewed } from '@/lib/viewsService'
 import redis from '@/lib/redis'
 import getPayload from '@/lib/payload'
@@ -8,8 +8,10 @@ export async function GET() {
     await redis.connect()
     const cached = await redis.get('top')
     if (cached) {
+      const parsed = JSON.parse(cached)
+      await redis.quit()
       return NextResponse.json(
-        { data: JSON.parse(cached).data, generatedAt: JSON.parse(cached).generatedAt },
+        { data: parsed.data, generatedAt: parsed.generatedAt },
         {
           status: 200,
           headers: {
@@ -21,11 +23,9 @@ export async function GET() {
     const mostViewed = await getMostViewed({ limit: 5 })
     const data = await populateArticles(mostViewed)
 
-    after(async () => {
-      await redis.connect()
-      await redis.set('top', JSON.stringify({ data: data, generatedAt: new Date().toISOString() }))
-      await redis.close()
-    })
+    await redis.set('top', JSON.stringify({ data: data, generatedAt: new Date().toISOString() }))
+    await redis.quit()
+
     return NextResponse.json(
       { data: data, generatedAt: new Date().toISOString() },
       {
@@ -36,10 +36,11 @@ export async function GET() {
       },
     )
   } catch (err) {
+    try {
+      await redis.quit()
+    } catch {}
     console.error('[GET /api/views/most-viewed]', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  } finally {
-    await redis.close()
   }
 }
 
@@ -81,6 +82,5 @@ async function populateArticles(
     }),
   )
 
-  console.log(final)
   return final
 }

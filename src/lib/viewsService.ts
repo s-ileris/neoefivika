@@ -11,11 +11,11 @@ function getWeeklyCutoff() {
   return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 }
 
-function computeWeeklyTotal(days = {}) {
+function computeWeeklyTotal(days: Record<string, number> = {}) {
   const cutoff = getWeeklyCutoff()
   return Object.entries(days)
     .filter(([dateStr]) => new Date(dateStr) >= cutoff)
-    .reduce((sum, [, count]) => sum + count, 0)
+    .reduce((sum, [, count]) => sum + (typeof count === 'number' ? count : 0), 0)
 }
 
 export async function incrementView(articleId: string) {
@@ -34,12 +34,14 @@ export async function getArticleViewCount(articleId: string) {
   const doc = await db.collection(COUNTERS_COLLECTION).doc(articleId).get()
   if (!doc.exists) return { articleId, weekly: 0, total: 0, days: {} }
 
-  const { days = {}, total = 0 } = doc.data()
+  const data = doc.data() ?? {}
+  const days: Record<string, number> = (data.days ?? {}) as Record<string, number>
+  const total: number = typeof data.total === 'number' ? data.total : 0
 
   return {
     articleId,
     weekly: computeWeeklyTotal(days),
-    total, // ← add this
+    total,
     days,
   }
 }

@@ -1,6 +1,9 @@
 import { Search } from '@upstash/search'
 
-const client = Search.fromEnv()
+const client = new Search({
+  url: process.env.NEXT_PUBLIC_UPSTASH_SEARCH_REST_URL,
+  token: process.env.UPSTASH_SEARCH_REST_TOKEN,
+})
 
 const index = client.index('articles')
 

@@ -8,7 +8,7 @@
 
 /.idea/*
 !/.idea/runConfigurations
-
+index.js
 # testing
 /coverage
 
@@ -51,3 +51,8 @@ node_modules/
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+certificates

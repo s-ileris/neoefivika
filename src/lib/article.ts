@@ -9,6 +9,7 @@ const ARTICLE_STATUS_LABELS: Record<string, string> = {
   pending: 'Σε επεξεργασία',
   rejected: 'Απορρίφθηκε',
 }
+
 const ARTICLE_TYPE_LABELS: Record<string, string> = {
   politics: 'Πολιτική',
   society: 'Κοινωνία',
@@ -20,6 +21,11 @@ const ARTICLE_TYPE_LABELS: Record<string, string> = {
   feminism: 'Φεμινισμός',
   poetry: 'Ποίηση',
   personal: 'Προσωπικό',
+  showbiz: 'Showbiz',
+  critique: 'Κριτική',
+  science: 'Επιστήμη',
+  fashion: 'Μόδα',
+  sport: 'Αθλητικά',
 }
 
 export function getArticleLabel(type: string | undefined | null): string | undefined {
@@ -73,6 +79,26 @@ export const articleTypes = [
     label: 'Προσωπικό',
     value: 'personal',
   },
+  {
+    label: 'Showbiz',
+    value: 'showbiz',
+  },
+  {
+    label: 'Κριτική',
+    value: 'critique',
+  },
+  {
+    label: 'Επιστήμη',
+    value: 'science',
+  },
+  {
+    label: 'Μόδα',
+    value: 'fashion',
+  },
+  {
+    label: 'Αθλητικά',
+    value: 'sport',
+  },
 ]
 
 // Checks if a given string is a valid article type value
@@ -81,25 +107,29 @@ export function isArticleType(value: string | undefined | null): boolean {
   return Object.prototype.hasOwnProperty.call(ARTICLE_TYPE_LABELS, value)
 }
 
-export function getAuthor(author: unknown) {
+export function getAuthor(author: unknown, createdAt: string) {
   if (!author || typeof author !== 'object') {
     return null
   }
-  let name = ''
-  let age = 0
-  // @ts-ignore
-  name = author.name
 
-  // @ts-ignore
-  if (!('birthday' in author) || !('createdAt' in author)) return null
-  const birthday = new Date((author as any).birthday)
-  const createdAt = new Date((author as any).createdAt)
-  let aget = createdAt.getFullYear() - birthday.getFullYear()
-  const m = createdAt.getMonth() - birthday.getMonth()
-  if (m < 0 || (m === 0 && createdAt.getDate() < birthday.getDate())) {
-    aget--
+  // Safely extract name, birthday, and createdAt
+  const { name, birthday } = author as {
+    name?: string
+    birthday?: string | Date
   }
-  age = aget
+
+  if (!name || !birthday || !createdAt) return null
+
+  const bday = new Date(birthday)
+  const cAt = new Date(createdAt)
+
+  if (isNaN(bday.getTime()) || isNaN(cAt.getTime())) return null
+
+  let age = cAt.getFullYear() - bday.getFullYear()
+  const m = cAt.getMonth() - bday.getMonth()
+  if (m < 0 || (m === 0 && cAt.getDate() < bday.getDate())) {
+    age--
+  }
 
   return { name, age }
 }

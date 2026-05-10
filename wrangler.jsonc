@@ -1,0 +1,15 @@
+{
+  "name": "my-payload-app",
+  "compatibility_date": "2024-03-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+//   "vars": {
+//     "PAYLOAD_SECRET": "a_very_long_and_secure_secret_key",
+//     "R2_PUBLIC_DOMAIN": "https://your-public-r2-domain.com",
+//     "CLOUDFLARE_ACCOUNT_ID": "<your Cloudflare Account ID>"
+//   },
+}

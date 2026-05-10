@@ -9,11 +9,12 @@ export const Profiles: CollectionConfig = {
     name: true,
     birthday: true,
   },
+
   fields: [
     {
       name: 'id',
       type: 'text',
- 
+      index: true,
       unique: true,
     },
     {
@@ -35,7 +36,7 @@ export const Profiles: CollectionConfig = {
       type: 'textarea',
     },
     {
-      name: 'avatar',
+      name: 'profile',
       type: 'upload',
       relationTo: 'user-media',
     },
@@ -50,7 +51,7 @@ export const Profiles: CollectionConfig = {
         {
           name: 'link',
           type: 'text',
-          required: false,
+          required: true,
         },
       ],
     },

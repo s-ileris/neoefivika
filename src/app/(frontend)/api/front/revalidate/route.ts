@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache'
+import { revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
@@ -8,14 +8,15 @@ export async function POST(req: NextRequest) {
   }
   try {
     const data = await req.json()
-    const { slug, collection } = data
-    if (collection === 'article') {
-      revalidatePath(`/article/${slug}`, 'page')
-      return NextResponse.json({ message: 'Path revalidated.' })
+    const { tags } = data
+    if (Array.isArray(tags)) {
+      for (const tag of tags) {
+        revalidateTag(tag, 'max')
+      }
     }
-    return NextResponse.json({ message: 'Invalid collection.' })
+    return NextResponse.json({ message: 'Tags revalidated.' })
   } catch (e) {
-    console.error('Path revalidation failed:', e)
+    console.error('Tag revalidation failed:', e)
     return NextResponse.json({ message: 'Revalidation failed' }, { status: 500 })
   }
 }

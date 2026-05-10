@@ -1,11 +1,11 @@
-import Menu from '@/components/menu'
 import { Suspense } from 'react'
+import Toaster from './toater'
 
-export default function AccountLayout({ children }: { children: React.ReactNode }) {
+export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense>
-      <Menu />
-      {children}
-    </Suspense>
+    <div className="min-h-screen">
+      <Suspense>{children}</Suspense>
+      <Toaster />
+    </div>
   )
 }

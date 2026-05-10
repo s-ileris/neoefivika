@@ -72,7 +72,6 @@ export interface Config {
     article: Article;
     profiles: Profile;
     'user-media': UserMedia;
-    search: Search;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -85,7 +84,6 @@ export interface Config {
     article: ArticleSelect<false> | ArticleSelect<true>;
     profiles: ProfilesSelect<false> | ProfilesSelect<true>;
     'user-media': UserMediaSelect<false> | UserMediaSelect<true>;
-    search: SearchSelect<false> | SearchSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -166,11 +164,11 @@ export interface Profile {
   birthday?: string | null;
   email: string;
   bio?: string | null;
-  avatar?: (number | null) | UserMedia;
+  profile?: (number | null) | UserMedia;
   location?: string | null;
   links?:
     | {
-        link?: string | null;
+        link: string;
         id?: string | null;
       }[]
     | null;
@@ -184,7 +182,7 @@ export interface Profile {
 export interface UserMedia {
   id: number;
   /**
-   * Auto-generated on upload — do not edit manually
+   * Auto-generated on upload
    */
   lqip?: string | null;
   prefix?: string | null;
@@ -208,14 +206,6 @@ export interface UserMedia {
       filesize?: number | null;
       filename?: string | null;
     };
-    small?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
   };
 }
 /**
@@ -225,9 +215,10 @@ export interface UserMedia {
 export interface Media {
   id: number;
   /**
-   * Auto-generated on upload — do not edit manually
+   * Auto-generated on upload
    */
   lqip?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -271,6 +262,11 @@ export interface Article {
         | 'feminism'
         | 'poetry'
         | 'personal'
+        | 'showbiz'
+        | 'critique'
+        | 'science'
+        | 'fashion'
+        | 'sport'
       )
     | null;
   author?: (string | null) | Profile;
@@ -301,24 +297,6 @@ export interface Article {
      */
     reason?: string | null;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "search".
- */
-export interface Search {
-  id: number;
-  title?: string | null;
-  priority?: number | null;
-  doc: {
-    relationTo: 'article';
-    value: number | Article;
-  };
-  description?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -365,10 +343,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'user-media';
         value: number | UserMedia;
-      } | null)
-    | ({
-        relationTo: 'search';
-        value: number | Search;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -442,6 +416,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   lqip?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -500,7 +475,7 @@ export interface ProfilesSelect<T extends boolean = true> {
   birthday?: T;
   email?: T;
   bio?: T;
-  avatar?: T;
+  profile?: T;
   location?: T;
   links?:
     | T
@@ -542,29 +517,7 @@ export interface UserMediaSelect<T extends boolean = true> {
               filesize?: T;
               filename?: T;
             };
-        small?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "search_select".
- */
-export interface SearchSelect<T extends boolean = true> {
-  title?: T;
-  priority?: T;
-  doc?: T;
-  description?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -612,7 +565,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Homepage {
   id: number;
-  top?: (number | null) | Article;
   featured?:
     | {
         article?: (number | null) | Article;
@@ -627,7 +579,6 @@ export interface Homepage {
  * via the `definition` "homepage_select".
  */
 export interface HomepageSelect<T extends boolean = true> {
-  top?: T;
   featured?:
     | T
     | {

@@ -1,5 +1,3 @@
-'use cache'
-
 import { notFound, redirect } from 'next/navigation'
 import Client from './page.client'
 import { Suspense } from 'react'
@@ -11,13 +9,26 @@ import Search from '@/components/icons/search'
 import ArrowLeft from '@/components/icons/arrowLeft'
 import { cacheLife, cacheTag } from 'next/cache'
 
+export const getArticle = async (slug: string) => {
+  'use cache'
+  cacheTag(`a:${slug}`)
+  cacheLife('max')
+  const payload = await getPayload()
+  const result = await payload.find({
+    collection: 'article',
+    depth: 2,
+    limit: 1,
+    where: { slug: { equals: slug } },
+  })
+  return result.docs[0] ?? null
+}
+
 export async function generateStaticParams() {
   const payload = await getPayload()
   const articles = await payload.find({
     collection: 'article',
     select: {
       slug: true,
-      title: true,
     },
     limit: 0,
   })
@@ -31,11 +42,9 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  cacheTag('a:' + slug)
-  cacheLife('max')
   return (
-    <div className="min-h-[150vh]">
-      <div className="fixed px-5 py-3 z-50 top-0 left-0 bg-transparent w-full h-fit flex items-center">
+    <div className="min-h-[150vh] pb-10">
+      <div className="fixed px-5 py-4 z-60 top-0 left-0 bg-transparent w-full h-fit flex items-center">
         <Link href={'/articles/'} className="flex-1 flex items-center">
           <ArrowLeft size={26} />
         </Link>
@@ -55,24 +64,16 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
 async function CachedComponent({ slug }: { slug: string }) {
   const payload = await getPayload()
-  const result = await payload.find({
-    collection: 'article',
-    depth: 2,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
-  if (!result.docs[0]) {
+  const result = await getArticle(slug)
+  if (!result) {
     return notFound()
   }
-  if (result.docs[0].application?.status === 'pending') {
+  if (result.application?.status === 'pending') {
     redirect('/article/pending')
-  } else if (result.docs[0].application?.status === 'rejected') {
+  } else if (result.application?.status === 'rejected') {
     redirect('/article/rejected')
   } else {
-    return <Client data={result.docs[0]} />
+    return <Client data={result} />
   }
 }
 
@@ -82,22 +83,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const payload = await getPayload()
-  const result = await payload.find({
-    collection: 'article',
-    select: {
-      image: true,
-      title: true,
-      description: true,
-    },
-    depth: 2,
-    where: {
-      slug: {
-        equals: slug,
-      },
-    },
-  })
-  const article = result.docs[0]
+  const article = await getArticle(slug)
   if (!article) {
     return {}
   }

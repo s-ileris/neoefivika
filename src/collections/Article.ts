@@ -2,7 +2,7 @@ import { CollectionConfig } from 'payload'
 import { publishedOrAuthorized } from './access/publishedOrAuthorized'
 import { checkRole } from './access/checkRole'
 import { admins } from './access/admins'
-import { generateSlug, revalidate, syncSearch } from './articleHooks'
+import { deleteSearch, generateSlug, requestRevalidation, revalidate, syncSearch } from './articleHooks'
 
 export const Article: CollectionConfig = {
   slug: 'article',
@@ -11,14 +11,15 @@ export const Article: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [generateSlug],
-    afterChange: [syncSearch, ({ doc }) => revalidate({ slug: doc.slug })],
-    afterDelete: [({ doc }) => revalidate({ slug: doc.slug })],
+    afterChange: [syncSearch, requestRevalidation],
+    afterDelete: [({ doc }) => revalidate({ slug: doc.slug, type: doc.type }), deleteSearch],
   },
   defaultPopulate: {
     title: true,
     author: true,
     createdAt: true,
     type: true,
+    slug: true,
     image: true,
   },
   access: {
@@ -28,12 +29,13 @@ export const Article: CollectionConfig = {
     update: admins,
   },
   fields: [
-    { type: 'text', name: 'slug', admin: { position: 'sidebar' } },
+    { type: 'text', name: 'slug', index: true, admin: { position: 'sidebar' } },
     { type: 'text', name: 'title', required: true },
     { type: 'text', name: 'description' },
     {
       type: 'select',
       name: 'type',
+      index: true,
       options: [
         {
           label: 'Πολιτική',
@@ -75,16 +77,38 @@ export const Article: CollectionConfig = {
           label: 'Προσωπικό',
           value: 'personal',
         },
+        {
+          label: 'Showbiz',
+          value: 'showbiz',
+        },
+        {
+          label: 'Κριτική',
+          value: 'critique',
+        },
+        {
+          label: 'Επιστήμη',
+          value: 'science',
+        },
+        {
+          label: 'Μόδα',
+          value: 'fashion',
+        },
+        {
+          label: 'Αθλητικά',
+          value: 'sport',
+        },
       ],
     },
-    { type: 'relationship', relationTo: 'profiles', name: 'author' },
+    { type: 'relationship', index: true, relationTo: 'profiles', name: 'author' },
     {
       type: 'richText',
       name: 'content',
       access: {
-        read: ({ data }) => {
-          if (data && data.contentRaw) return true
-          return false
+        read: ({ doc }) => {
+          if (doc && doc.contentRaw && doc.contentRaw.length) {
+            return false
+          }
+          return true
         },
       },
     },

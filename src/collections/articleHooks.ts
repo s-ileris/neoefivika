@@ -1,21 +1,31 @@
 import index from '@/lib/search'
-import { CollectionAfterChangeHook, CollectionBeforeValidateHook } from 'payload'
+import {
+  CollectionAfterChangeHook,
+  CollectionAfterDeleteHook,
+  CollectionBeforeValidateHook,
+} from 'payload'
 import slugify from 'slugify'
 import { v4 } from 'uuid'
 
-export async function revalidate({ slug }: { slug: string }) {
-  console.log('[REVALIDATION]', slug)
-  await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/front/revalidate`, {
+export async function revalidate({ slug, type }: { slug: string; type: string }) {
+  await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/front/revalidate`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${process.env.WEBHOOK_SECRET}`,
     },
     body: JSON.stringify({
-      collection: 'article',
-      slug: slug,
+      tags: [`a:${slug}`, 'a', `a-${type}`],
     }),
   })
+}
+
+export const requestRevalidation: CollectionAfterChangeHook = async function ({ doc }) {
+  if (doc.application.status === 'published') {
+    await revalidate({ slug: doc.slug, type: doc.type })
+    return
+  }
+  return
 }
 
 export const syncSearch: CollectionAfterChangeHook = async function ({
@@ -26,11 +36,14 @@ export const syncSearch: CollectionAfterChangeHook = async function ({
   if (operation === 'create') {
     await index.upsert([
       {
-        id: doc.slug,
+        id: doc.id,
         content: {
           title: doc.title,
-          genre: doc.type,
           description: doc.description,
+        },
+        metadata: {
+          genre: doc.type,
+          slug: doc.slug,
         },
       },
     ])
@@ -42,19 +55,26 @@ export const syncSearch: CollectionAfterChangeHook = async function ({
     const typeSame = previousDoc.type === doc.type
     const slugSame = previousDoc.slug === doc.slug
     if (titleSame && descriptionSame && typeSame && slugSame) return
-    await index.delete({ ids: [doc.slug] })
+    await index.delete({ ids: [doc.id] })
     await index.upsert([
       {
-        id: doc.slug,
+        id: doc.id,
         content: {
           title: doc.title,
-          genre: doc.type,
           description: doc.description,
+        },
+        metadata: {
+          genre: doc.type,
+          slug: doc.slug,
         },
       },
     ])
     return
   }
+}
+
+export const deleteSearch: CollectionAfterDeleteHook = async function ({ doc }) {
+  await index.delete({ ids: [doc.id] })
 }
 
 export const generateSlug: CollectionBeforeValidateHook = async function ({

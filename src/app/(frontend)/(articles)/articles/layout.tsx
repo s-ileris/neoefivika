@@ -1,5 +1,4 @@
 'use client'
-import Menu from '@/components/menu'
 import { articleTypes } from '@/lib/article'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -36,7 +35,6 @@ function ArticlesTypeLinks() {
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      <Menu />
       <div className="pt-24 px-5">
         <Suspense
           fallback={

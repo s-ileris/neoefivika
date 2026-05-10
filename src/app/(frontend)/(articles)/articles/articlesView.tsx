@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import PImage from '@/components/PayloadImage'
 import { getArticleLabel, getAuthor } from '@/lib/article'
 import { isValidImage } from '@/lib/utils'
@@ -19,6 +19,7 @@ export default function ArticlesView({ data }: { data: Article[] }) {
               <div className="relative">
                 <PImage
                   unoptimized
+                  //@ts-ignore
                   image={article.image}
                   alt={article.title}
                   size="small"
@@ -49,8 +50,10 @@ export default function ArticlesView({ data }: { data: Article[] }) {
               </h1>
               {article.author && (
                 <p className="text-sm text-gray-500 mt-1.5">
-                  {getAuthor(article.author)?.name}
-                  {getAuthor(article.author)?.age ? `, ${getAuthor(article.author)?.age} ετών` : ''}
+                  {getAuthor(article.author, article.createdAt)?.name}
+                  {getAuthor(article.author, article.createdAt)?.age
+                    ? `, ${getAuthor(article.author, article.createdAt)?.age} ετών`
+                    : ''}
                 </p>
               )}
             </div>

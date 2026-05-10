@@ -1,7 +1,6 @@
-import { DecoratorNode, DOMExportOutput, SerializedLexicalNode, Spread } from "lexical";
+import { DecoratorNode, DOMExportOutput, SerializedLexicalNode, Spread } from 'lexical'
 
 export type SerializedImageNode = Spread<{ src: string; alt: string }, SerializedLexicalNode>
-
 
 // --- 1. CUSTOM IMAGE NODE ---
 export class ImageNode extends DecoratorNode<React.ReactNode> {
@@ -38,16 +37,6 @@ export class ImageNode extends DecoratorNode<React.ReactNode> {
 
   updateDOM(): false {
     return false
-  }
-
-  exportDOM(): DOMExportOutput {
-    const img = document.createElement('img')
-    img.setAttribute('src', this.__src)
-    img.setAttribute('alt', this.__alt)
-    img.style.maxWidth = '100%'
-    img.style.margin = 'auto 12px'
-    img.style.display = 'block'
-    return { element: img }
   }
 
   decorate(): React.ReactNode {

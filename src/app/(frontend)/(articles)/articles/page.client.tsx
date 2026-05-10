@@ -1,78 +1,59 @@
 'use client'
-import { useEffect, useRef, useCallback } from 'react'
-import { Article } from '@/payload-types'
+import { useEffect, useRef } from 'react'
 import ArticlesView from './articlesView'
-import { useState } from 'react'
+import useSWRInfinite from 'swr/infinite'
 const select =
   '&select[title]=true&select[slug]=true&select[type]=true&select[image]=true&select[createdAt]=true&select[author]=true'
+const PAGE_SIZE = 20
 
-export default function Articles({
-  initialData,
-  totalPages,
-}: {
-  initialData: Article[]
-  totalPages: number
-}) {
-  const [page, setPage] = useState(1)
-  const [data, setData] = useState<Article[]>(initialData || [])
-  const [loading, setLoading] = useState(false)
+const fetcher = (url: string) =>
+  fetch(url, { next: { revalidate: 86400, tags: ['a'] } }).then((res) => res.json())
+
+export default function Articles() {
   const endRef = useRef<HTMLDivElement | null>(null)
+  const getKey = (pageIndex: number, previousPageData: any) => {
+    if (previousPageData && !previousPageData.docs.length) return null
 
-  const loadMore = useCallback(async () => {
-    if (loading || totalPages === page) return
-    setLoading(true)
-    try {
-      const nextPage = page + 1
-      const res = await fetch(`/api/article?limit=20&page=${nextPage}${select}`)
-      if (!res.ok) throw new Error('Something went wrong')
-      const json = await res.json()
-      if (Array.isArray(json.docs)) {
-        setData((prev) => [...prev, ...json.docs])
-        setPage(nextPage)
-      }
-    } catch (e: any) {
-      console.error('ERROR FETCHING ARTICLES', e)
-    } finally {
-      setLoading(false)
-    }
-  }, [page, loading])
+    return `/api/article?limit=${PAGE_SIZE}&page=${pageIndex + 1}${select}`
+  }
 
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
-      const [entry] = entries
-      if (entry.isIntersecting) {
-        loadMore()
-        observer.unobserve(entry.target) // Stop observing after first intersect
-      }
-    },
-    [loadMore],
-  )
+  const { data, size, setSize, isValidating, isLoading } = useSWRInfinite(getKey, fetcher, {
+    revalidateFirstPage: false,
+    persistSize: true,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+    revalidateOnReconnect: false,
+  })
+
+  const articles = data ? data.flatMap((page) => page.docs) : []
+  const isReachingEnd = data && data[data.length - 1]?.docs.length < PAGE_SIZE
 
   useEffect(() => {
-    const target = endRef.current
-    if (!target) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isValidating && !isReachingEnd) {
+          setSize(size + 1)
+        }
+      },
+      { threshold: 0.1 },
+    )
 
-    const observer = new IntersectionObserver((entries, obs) => handleObserver(entries, obs), {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1,
-    })
-
-    observer.observe(target)
-    return () => {
-      observer.disconnect()
-    }
-  }, [handleObserver])
+    if (endRef.current) observer.observe(endRef.current)
+    return () => observer.disconnect()
+  }, [isValidating, isReachingEnd, size, setSize])
 
   return (
     <>
-      <ArticlesView data={data} />
-      {loading && (
-        <div className="fixed inset-0 bg-white/50 gris place-items-center w-full h-screen z-10">
-          <p>loading more.. .</p>
+      <ArticlesView data={articles} />
+
+      {(isLoading || (isValidating && size > 1)) && (
+        <div className="fixed inset-0 bg-white/50 grid place-items-center w-full h-screen z-10">
+          <p className="animate-pulse font-medium">Φόρτωση κειμένων...</p>
         </div>
       )}
-      <div ref={endRef} />
+
+      <div ref={endRef} className="h-10" />
     </>
   )
 }

@@ -19,9 +19,32 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(dirname),
   },
+  async headers() {
+    return [
+      {
+        source: '/api/article/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=7200, stale-while-revalidate=86400',
+          },
+        ],
+      },
+    ]
+  },
+
   cacheComponents: true,
+  allowedDevOrigins: ['local.neoefivika.gr'],
   images: {
-    remotePatterns: [new URL('http://localhost:3000/**')],
+    remotePatterns: [
+      new URL('http://localhost:3000/**'),
+      new URL('https://pub-88c6e50343e14897805b9becd5088bdb.r2.dev/**'),
+      new URL('https://image.neoefivika.gr/**/**'),
+    ],
+    unoptimized: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
 }
 

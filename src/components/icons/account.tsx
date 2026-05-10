@@ -8,7 +8,7 @@ export default function Account({
   className?: string
 }) {
   return (
-    <svg
+  <svg
       xmlns="http://www.w3.org/2000/svg"
       height={size}
       width={size}

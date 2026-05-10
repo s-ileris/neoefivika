@@ -1,0 +1,268 @@
+/* Headings */
+.privacy-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  color: #18181b;
+}
+
+.privacy-wrapper *,
+.privacy-wrapper *::before,
+.privacy-wrapper *::after {
+  box-sizing: border-box;
+}
+
+.privacy-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.privacy-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.privacy-section.gap-small {
+  gap: 8px;
+}
+
+.privacy-section.gap-large {
+  gap: 24px;
+}
+
+.privacy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.privacy-meta-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 1;
+  color: #52525b;
+}
+
+.privacy-meta-group span,
+.privacy-meta-group strong,
+.privacy-meta-group a {
+  font-size: inherit;
+  color: inherit;
+}
+
+.privacy-meta-group a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.privacy-meta-group strong {
+  font-weight: 600;
+}
+
+.privacy-chip {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  background-color: #d4d4d8;
+}
+
+.privacy-chip.small {
+  width: 10px;
+  height: 10px;
+  background-color: #a1a1aa;
+}
+
+.privacy-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #0f172a;
+}
+
+.privacy-section-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #0f172a;
+}
+
+.privacy-subtitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #0f172a;
+}
+
+.privacy-meta-text {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #52525b;
+}
+
+.privacy-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #27272a;
+  font-weight: 400;
+}
+
+.privacy-text strong {
+  font-weight: 600;
+}
+
+.privacy-list {
+  margin: 0;
+  padding-left: 20px;
+  list-style: square;
+}
+
+.privacy-list .privacy-list-item + .privacy-list-item {
+  margin-top: 6px;
+}
+
+.privacy-list-item .privacy-text {
+  display: inline;
+}
+
+.privacy-measure-title {
+  font-weight: 600;
+}
+
+.privacy-table-container {
+  width: 100%;
+  border: 1px solid #a1a1aa;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.privacy-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.privacy-table thead {
+  background-color: #f4f4f5;
+}
+
+.privacy-table th,
+.privacy-table td {
+  padding: 16px 20px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #27272a;
+  vertical-align: top;
+  border-left: 1px solid #a1a1aa;
+  word-break: break-word;
+}
+
+.privacy-table th:first-child,
+.privacy-table td:first-child {
+  border-left: none;
+}
+
+.privacy-table thead th {
+  font-weight: 600;
+  color: #52525b;
+  text-align: left;
+  border-bottom: 1px solid #a1a1aa;
+  letter-spacing: 0.2px;
+}
+
+.privacy-table tbody tr + tr td {
+  border-top: 1px solid #a1a1aa;
+}
+
+.privacy-table td ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.privacy-table td ul li + li {
+  margin-top: 6px;
+}
+
+.privacy-table a {
+  color: #27272a;
+  text-decoration: none;
+}
+
+.privacy-table a:hover,
+.privacy-table a:focus {
+  text-decoration: underline;
+}
+
+.privacy-table th:nth-child(1),
+.privacy-table td:nth-child(1),
+.privacy-table th:nth-child(2),
+.privacy-table td:nth-child(2) {
+  width: 208px;
+}
+
+.privacy-table th:nth-child(3),
+.privacy-table td:nth-child(3),
+.privacy-table th:nth-child(4),
+.privacy-table td:nth-child(4) {
+  width: 288px;
+}
+
+.privacy-footer {
+  padding: 32px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 14px;
+  color: #52525b;
+}
+
+.privacy-footer .privacy-meta-group {
+  font-size: 14px;
+  color: #52525b;
+}
+
+@media (max-width: 1024px) {
+  .privacy-wrapper {
+    padding: 64px 32px;
+  }
+
+  .privacy-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .privacy-table {
+    table-layout: auto;
+  }
+
+  .privacy-table th:nth-child(1),
+  .privacy-table td:nth-child(1),
+  .privacy-table th:nth-child(2),
+  .privacy-table td:nth-child(2),
+  .privacy-table th:nth-child(3),
+  .privacy-table td:nth-child(3),
+  .privacy-table th:nth-child(4),
+  .privacy-table td:nth-child(4) {
+    width: auto;
+  }
+}

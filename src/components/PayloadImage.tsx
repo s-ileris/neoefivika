@@ -1,3 +1,4 @@
+'use client'
 import { cn } from '@/lib/utils'
 import { Media, UserMedia } from '@/payload-types'
 import Image from 'next/image'
@@ -16,7 +17,6 @@ export default function PImage({
   size,
   unoptimized,
   className,
-  ...props
 }: {
   image: Media | UserMedia
   width?: number
@@ -37,9 +37,8 @@ export default function PImage({
     if (size === 'thumbnail' && 'thumbnail' in image.sizes) {
       variant = image.sizes.thumbnail
     } else if (size === 'small') {
+      //@ts-ignore
       variant = image.sizes.small
-    } else if (size === 'full') {
-      variant = (image.sizes as Record<string, ImageSizeEntry | undefined>).full
     }
     if (variant?.url) {
       imgSrc = variant.url

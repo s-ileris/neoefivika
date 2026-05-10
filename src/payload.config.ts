@@ -5,7 +5,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { s3Storage } from '@payloadcms/storage-s3'
-import { searchPlugin } from '@payloadcms/plugin-search'
+
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Article } from './collections/Article'
@@ -22,9 +22,6 @@ export default buildConfig({
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
-    },
-    components: {
-      beforeDashboard: ['./components/admin/beforeDashboard'],
     },
   },
   globals: [Homepage],
@@ -54,6 +51,7 @@ export default buildConfig({
             const parts = [process.env.CDN_URL, prefix, filename].filter(Boolean)
             return parts.join('/')
           },
+          prefix: 'm',
           disablePayloadAccessControl: true,
         },
         'user-media': {
@@ -66,32 +64,16 @@ export default buildConfig({
         },
       },
       bucket: process.env.S3_BUCKET || '',
+      clientUploads: true,
       config: {
         credentials: {
           accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
           secretAccessKey: process.env.S3_SECRET || '',
         },
+
         region: 'auto',
         endpoint: process.env.S3_ENDPOINT || '',
       },
-    }),
-    searchPlugin({
-      collections: ['article'],
-      searchOverrides: {
-        fields: ({ defaultFields }) => [
-          ...defaultFields,
-          {
-            name: 'description',
-            type: 'textarea',
-          },
-        ],
-      },
-
-      beforeSync: ({ originalDoc, searchDoc }) => ({
-        ...searchDoc,
-        title: originalDoc.title,
-        description: originalDoc?.description || '',
-      }),
     }),
   ],
 })
